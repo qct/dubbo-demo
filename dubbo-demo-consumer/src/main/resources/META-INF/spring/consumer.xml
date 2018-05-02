@@ -1,18 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:dubbo="http://dubbo.apache.org/schema/dubbo"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans.xsd
-	   http://code.alibabatech.com/schema/dubbo
-	   http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+	   http://dubbo.apache.org/schema/dubbo
+	   http://dubbo.apache.org/schema/dubbo/dubbo.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
 
     <!-- 消费方应用名，用于计算依赖关系，不是匹配条件，不要与提供方一样 -->
     <dubbo:application name="consumer-of-helloworld-app"/>
 
     <!-- 使用multicast广播注册中心暴露发现服务地址 -->
-    <dubbo:registry address="multicast://224.5.6.7:1234"/>
+    <!--<dubbo:registry address="multicast://224.5.6.7:1234"/>-->
+    <dubbo:registry id="registry1" address="zookeeper://localhost:2181" />
+    <!--<dubbo:registry id="registry2" address="zookeeper://localhost:2182" default="false"/>-->
+
+    <dubbo:monitor protocol="registry"/>
 
     <!-- 生成远程服务代理，可以和本地bean一样使用demoService -->
-    <dubbo:reference id="demoService" interface="qct.DemoService"/>
+    <!-- consumer async 1-->
+    <!--
+    <dubbo:reference id="demoService" interface="qct.DemoService" registry="registry1" group="myGroup" version = "1.0" timeout="3000" async="true"/>
+    -->
+    <!-- consumer async 2-->
+<!--    <dubbo:reference id="demoService" interface="qct.DemoService" registry="registry1" group="myGroup" version ="1.0" timeout="3000">
+        <dubbo:method name="sayHello" onreturn="callbackListener.onResult"></dubbo:method>
+    </dubbo:reference>
+    <bean id="callbackListener" class="qct.CallbackListener"/>-->
+
+    <!-- provider async-->
+    <dubbo:reference id="demoService" interface="qct.DemoService" registry="registry1" group="myGroup" version ="1.0" timeout="30000">
+    </dubbo:reference>
+
+
+    <!--<dubbo:annotation package="qct"/>-->
+
+    <!--<context:component-scan base-package="qct"/>-->
+    <!--<aop:aspectj-autoproxy proxy-target-class="true"/>-->
 </beans>

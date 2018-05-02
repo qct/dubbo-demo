@@ -9,20 +9,16 @@
 
     <!-- 提供方应用信息，用于计算依赖关系 -->
     <!--<dubbo:application name="hello-world-appaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"/>-->
-    <dubbo:application name="hello-world-app" logger="slf4j"/>
+    <dubbo:application name="hello-world-app"/>
 
     <!-- 使用multicast广播注册中心暴露服务地址 -->
     <!--<dubbo:registry address="multicast://224.5.6.7:1234"/>-->
-    <dubbo:registry id="registry1" address="zookeeper://localhost:2181"/>
+    <dubbo:registry id="registry1" address="zookeeper://localhost:2181" />
 
     <!--<dubbo:monitor protocol="registry"/>-->
 
     <!-- 用dubbo协议在20880端口暴露服务 -->
-    <dubbo:protocol name="dubbo" port="20880" heartbeat="1000" dispatcher="execution"/>
+    <dubbo:protocol name="dubbo" port="20880"/>
 
-    <!-- 声明需要暴露的服务接口 -->
-    <dubbo:service interface="qct.DemoService" ref="demoService" registry="registry1" group="myGroup" version="1.0" timeout="30000"/>
-
-    <!-- 和本地bean一样实现服务 -->
-    <bean id="demoService" class="qct.DemoServiceImpl"/>
+    <dubbo:annotation package="qct"/>
 </beans>
